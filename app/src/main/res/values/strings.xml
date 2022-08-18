@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MultiViewsRecycler</string>
+    <string name="__">--</string>
 </resources>
