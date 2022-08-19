@@ -1,9 +1,9 @@
 package com.example.multiviewsrecycler.domain.repository
 
-import com.example.multiviewsrecycler.data.model.Entry
+import com.example.multiviewsrecycler.data.model.ApiData
 
 interface ApiRepository {
 
-    suspend fun hGetApisDataFromNetwork(): MutableList<Entry>
+    suspend fun hGetApisDataFromNetwork(): ApiData
 
 }

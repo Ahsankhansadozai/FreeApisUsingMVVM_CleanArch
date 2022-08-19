@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.multiviewsrecycler.common.BaseAdapter
+import com.example.multiviewsrecycler.common.DataState
 import com.example.multiviewsrecycler.databinding.ActivityMainBinding
 import com.example.multiviewsrecycler.databinding.NumberViewLayoutBinding
 import com.example.multiviewsrecycler.domain.dto.EntryDto
@@ -20,13 +21,11 @@ class HomeActivity : AppCompatActivity() {
     private val binding get() = _binding!!
     private val hHomeViewModel: HomeViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         hSetViewContent()
-
-
-//        hHomeViewModel.setStateEvent(mainStateEvent = HomeStateEvent.GetApisEvent)
 
         hSubscribeObserver()
 
@@ -40,12 +39,11 @@ class HomeActivity : AppCompatActivity() {
 
     private fun hSubscribeObserver() {
 
-/*
-        hHomeViewModel.mutableLiveDataApis.observe(this) { dataState ->
+        hHomeViewModel.dataState.observe(this) { dataState ->
             when (dataState) {
                 is DataState.Success -> {
                     displayProgressBar(false)
-                    hRecyclerAdapter.listOfItems = dataState.data
+                    hRecyclerAdapter.listOfItems = dataState.data as MutableList<EntryDto>
                 }
 
                 is DataState.Error -> {
@@ -55,18 +53,12 @@ class HomeActivity : AppCompatActivity() {
 
                 is DataState.Loading -> {
                     displayProgressBar(true)
-
                 }
 
             }
 
         }
-*/
 
-
-/*
-        hRecyclerAdapter.listOfItems = hHomeViewModel.hList
-*/
     }
 
 

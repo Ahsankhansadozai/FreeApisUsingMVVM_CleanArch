@@ -12,21 +12,16 @@ import javax.inject.Inject
 
 class GetApisUseCase @Inject constructor(
     private val repository: ApiRepository,
+
 ) {
     operator fun invoke(): Flow<Resource<List<EntryDto>>> = flow {
-        emit(Resource.Loading<List<EntryDto>>())
         try {
-            val apis = repository.hGetApisDataFromNetwork().map { it.toEntryDto() }
-
-            emit(Resource.Success<List<EntryDto>>(apis))
-
+            emit(Resource.Loading<List<EntryDto>>())
+            val data = repository.hGetApisDataFromNetwork().entries.map { it.toEntryDto() }
+            emit(Resource.Success<List<EntryDto>>(data))
         } catch (e: HttpException) {
-            emit(
-                Resource.Error<List<EntryDto>>(
-                    e.localizedMessage ?: "An unexpected error occurred"
-                )
-            )
-
+            emit(Resource.Error<List<EntryDto>>(e.localizedMessage
+                ?: "An unexpected error occurred"))
         } catch (e: IOException) {
             emit(
                 Resource.Error<List<EntryDto>>(
@@ -34,9 +29,8 @@ class GetApisUseCase @Inject constructor(
                 )
             )
         }
-
-
     }
+
 
 
 }
