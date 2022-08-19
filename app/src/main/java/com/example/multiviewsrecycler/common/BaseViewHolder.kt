@@ -8,7 +8,6 @@ class BaseViewHolder<T> internal constructor(
     private val experssion: (T, ViewBinding) -> Unit,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: T) {
-
         experssion(item, binding)
     }
 }

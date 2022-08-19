@@ -2,30 +2,33 @@ package com.example.multiviewsrecycler.presentation.home.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.multiviewsrecycler.common.BaseAdapter
 import com.example.multiviewsrecycler.databinding.ActivityMainBinding
 import com.example.multiviewsrecycler.databinding.NumberViewLayoutBinding
+import com.example.multiviewsrecycler.domain.dto.EntryDto
 import com.example.multiviewsrecycler.presentation.home.viewModel.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
-    var mAdapter = BaseAdapter<String>()
+    var hRecyclerAdapter = BaseAdapter<EntryDto>()
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
     private val hHomeViewModel: HomeViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /*
-        home view binding
-        */
         hSetViewContent()
 
-        mAdapter.listOfItems = hHomeViewModel.hList
+
+//        hHomeViewModel.setStateEvent(mainStateEvent = HomeStateEvent.GetApisEvent)
+
+        hSubscribeObserver()
 
         hRecyclerCallBack()
 
@@ -33,12 +36,42 @@ class HomeActivity : AppCompatActivity() {
 
         hSetUpRecyclerView()
 
-
     }
 
+    private fun hSubscribeObserver() {
+
+/*
+        hHomeViewModel.mutableLiveDataApis.observe(this) { dataState ->
+            when (dataState) {
+                is DataState.Success -> {
+                    displayProgressBar(false)
+                    hRecyclerAdapter.listOfItems = dataState.data
+                }
+
+                is DataState.Error -> {
+                    displayProgressBar(false)
+                    displayError(dataState.exception.message)
+                }
+
+                is DataState.Loading -> {
+                    displayProgressBar(true)
+
+                }
+
+            }
+
+        }
+*/
+
+
+/*
+        hRecyclerAdapter.listOfItems = hHomeViewModel.hList
+*/
+    }
+
+
     private fun hRecyclerBinding() {
-        mAdapter.expressionOnCreateViewHolder = { viewGroup ->
-            //Inflate the layout and send it to the adapter
+        hRecyclerAdapter.hOnCreateViewHolder = { viewGroup ->
             NumberViewLayoutBinding.inflate(LayoutInflater.from(viewGroup.context),
                 viewGroup,
                 false)
@@ -46,24 +79,19 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun hRecyclerCallBack() {
-        mAdapter.expressionViewHolderBinding = { eachItem, viewBinding ->
-            //eachItem will provide the each item in the list, in this case its a string type
-            //cast the viewBinding with your layout binding class
+        hRecyclerAdapter.hViewHolderBinding = { eachItem, viewBinding ->
             val view = viewBinding as NumberViewLayoutBinding
-            view.hTvNumber.text = eachItem
-            //you can use click listener on root or any button
+            view.hTvNumber.text = eachItem.description
             view.root.setOnClickListener {
-                //Click item value is eachItem
+
             }
         }
     }
 
     private fun hSetUpRecyclerView() {
-
-        //finally put the adapter to recyclerview
         binding.hRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = mAdapter
+            adapter = hRecyclerAdapter
         }
     }
 
@@ -71,5 +99,14 @@ class HomeActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
+
+    private fun displayProgressBar(isDisplayed: Boolean) {
+        binding.progressBar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
+    }
+
+    private fun displayError(message: String?) {
+        if (message != null) binding.text.text = message else binding.text.text = "Unknown error."
+    }
+
 
 }

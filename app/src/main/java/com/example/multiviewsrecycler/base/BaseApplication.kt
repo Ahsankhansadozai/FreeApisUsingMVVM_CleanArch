@@ -3,8 +3,10 @@ package com.example.multiviewsrecycler.base
 import android.app.Application
 import com.example.multiviewsrecycler.BuildConfig
 import com.example.multiviewsrecycler.common.Constants.hTag
+import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
+@HiltAndroidApp
 class BaseApplication : Application() {
 
     private val context: BaseApplication
