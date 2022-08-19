@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.multiviewsrecycler.common.BaseAdapter
 import com.example.multiviewsrecycler.common.DataState
 import com.example.multiviewsrecycler.databinding.ActivityMainBinding
-import com.example.multiviewsrecycler.databinding.NumberViewLayoutBinding
+import com.example.multiviewsrecycler.databinding.ApiViewLayoutBinding
 import com.example.multiviewsrecycler.domain.dto.EntryDto
 import com.example.multiviewsrecycler.presentation.home.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,7 +64,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun hRecyclerBinding() {
         hRecyclerAdapter.hOnCreateViewHolder = { viewGroup ->
-            NumberViewLayoutBinding.inflate(LayoutInflater.from(viewGroup.context),
+            ApiViewLayoutBinding.inflate(LayoutInflater.from(viewGroup.context),
                 viewGroup,
                 false)
         }
@@ -72,8 +72,10 @@ class HomeActivity : AppCompatActivity() {
 
     private fun hRecyclerCallBack() {
         hRecyclerAdapter.hViewHolderBinding = { eachItem, viewBinding ->
-            val view = viewBinding as NumberViewLayoutBinding
-            view.hTvNumber.text = eachItem.description
+            val view = viewBinding as ApiViewLayoutBinding
+            view.hApiName.text = eachItem.api
+            view.hApiDescription.text = eachItem.description
+            view.hApiUrl.text = eachItem.link
             view.root.setOnClickListener {
 
             }
