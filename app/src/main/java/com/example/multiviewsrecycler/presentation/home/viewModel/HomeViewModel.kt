@@ -11,6 +11,7 @@ import com.example.multiviewsrecycler.domain.usecases.GetApisUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import okhttp3.internal.notify
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,51 +26,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         getCoins()
-
     }
-
-/*
-    fun setStateEvent(HomeStateEvent: HomeStateEvent) {
-        viewModelScope.launch {
-            when (HomeStateEvent) {
-                is HomeStateEvent.GetApisEvent -> {
-                    Timber.d("calling API")
-                    hGetApisUseCase().onEach { result ->
-                        when (result) {
-                            is Resource.Success -> {
-                                Timber.d("Successfully get Apis data ")
-                                _dataState.value = DataState.Success(result.data ?: emptyList())
-                            }
-
-                            is Resource.Loading -> {
-                                Timber.d("Loading")
-
-                                _dataState.value = DataState.Loading
-
-                            }
-
-                            is Resource.Error -> {
-                                Timber.d("Error")
-
-                                _dataState.value = DataState.Error(Exception(result.message
-                                    ?: "Unexpected error occurred"))
-
-                            }
-
-                        }
-                    }
-
-
-                }
-
-                is HomeStateEvent.None -> {
-                    Timber.d("Nothing happens")
-                }
-            }
-        }
-
-    }*/
-
 
     private fun getCoins() {
         hGetApisUseCase().onEach { result ->
@@ -91,13 +48,5 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+
 }
-
-/*
-sealed class HomeStateEvent {
-
-    object GetApisEvent : HomeStateEvent()
-
-    object None : HomeStateEvent()
-}
-*/

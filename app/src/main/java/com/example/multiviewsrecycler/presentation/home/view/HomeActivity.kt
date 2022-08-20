@@ -1,25 +1,29 @@
 package com.example.multiviewsrecycler.presentation.home.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.multiviewsrecycler.common.BaseAdapter
+import com.example.multiviewsrecycler.common.BaseListAdapter
 import com.example.multiviewsrecycler.common.DataState
 import com.example.multiviewsrecycler.databinding.ActivityMainBinding
 import com.example.multiviewsrecycler.databinding.ApiViewLayoutBinding
 import com.example.multiviewsrecycler.domain.dto.EntryDto
 import com.example.multiviewsrecycler.presentation.home.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
-    var hRecyclerAdapter = BaseAdapter<EntryDto>()
+    var hRecyclerAdapter = BaseListAdapter<EntryDto>()
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
     private val hHomeViewModel: HomeViewModel by viewModels()
+    private var hList: List<EntryDto>? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +47,8 @@ class HomeActivity : AppCompatActivity() {
             when (dataState) {
                 is DataState.Success -> {
                     displayProgressBar(false)
-                    hRecyclerAdapter.listOfItems = dataState.data as MutableList<EntryDto>
+                    hList = dataState.data
+                    hRecyclerAdapter.submitList(hList)
                 }
 
                 is DataState.Error -> {
@@ -76,9 +81,17 @@ class HomeActivity : AppCompatActivity() {
             view.hApiName.text = eachItem.api
             view.hApiDescription.text = eachItem.description
             view.hApiUrl.text = eachItem.link
-            view.root.setOnClickListener {
-
+            view.hApiUrl.setOnClickListener {
+                hOpenUrlInBrowser(eachItem.link)
             }
+
+            view.hClear.setOnClickListener {
+                Timber.d("list size after  : ${hList?.size}")
+                val toMutableList = hList?.toMutableList()
+                toMutableList?.remove(eachItem)
+                hRecyclerAdapter.submitList(toMutableList as List<EntryDto>)
+            }
+
         }
     }
 
@@ -100,6 +113,12 @@ class HomeActivity : AppCompatActivity() {
 
     private fun displayError(message: String?) {
         if (message != null) binding.text.text = message else binding.text.text = "Unknown error."
+    }
+
+
+    fun hOpenUrlInBrowser(link: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        startActivity(browserIntent)
     }
 
 
