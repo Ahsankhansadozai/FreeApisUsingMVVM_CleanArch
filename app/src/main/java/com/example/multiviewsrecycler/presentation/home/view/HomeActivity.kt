@@ -34,7 +34,6 @@ class HomeActivity : AppCompatActivity() {
 
 
         lifecycleScope.launch {
-
             hSubscribeObserver()
         }
 
@@ -47,6 +46,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private suspend fun hSubscribeObserver() {
+
 
         hHomeViewModel.dataState.collect { dataState ->
             when (dataState) {
