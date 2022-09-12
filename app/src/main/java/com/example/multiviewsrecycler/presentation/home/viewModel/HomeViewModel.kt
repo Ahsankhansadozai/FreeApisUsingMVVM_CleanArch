@@ -19,7 +19,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-
     private val hGetApisUseCase: GetApisUseCase,
 
     ) : ViewModel() {
@@ -29,7 +28,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         getCoins()
-        hLoopAll()
+//        hLoopAll()
     }
 
     private fun getCoins() {
