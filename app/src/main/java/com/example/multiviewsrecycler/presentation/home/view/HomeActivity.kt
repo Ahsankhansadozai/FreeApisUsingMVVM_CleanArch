@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.multiviewsrecycler.common.BaseListAdapter
 import com.example.multiviewsrecycler.common.DataState
@@ -15,6 +16,7 @@ import com.example.multiviewsrecycler.databinding.ApiViewLayoutBinding
 import com.example.multiviewsrecycler.domain.dto.EntryDto
 import com.example.multiviewsrecycler.presentation.home.viewModel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -25,13 +27,15 @@ class HomeActivity : AppCompatActivity() {
     private val hHomeViewModel: HomeViewModel by viewModels()
     private var hList: List<EntryDto>? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         hSetViewContent()
 
-        hSubscribeObserver()
+
+        lifecycleScope.launch {
+            hSubscribeObserver()
+        }
 
         hRecyclerCallBack()
 
@@ -41,9 +45,10 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun hSubscribeObserver() {
+    private suspend fun hSubscribeObserver() {
 
-        hHomeViewModel.dataState.observe(this) { dataState ->
+
+        hHomeViewModel.dataState.collect { dataState ->
             when (dataState) {
                 is DataState.Success -> {
                     displayProgressBar(false)
@@ -116,7 +121,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
-    fun hOpenUrlInBrowser(link: String) {
+    private fun hOpenUrlInBrowser(link: String) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
         startActivity(browserIntent)
     }

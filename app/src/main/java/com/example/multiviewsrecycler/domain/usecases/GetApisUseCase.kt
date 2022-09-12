@@ -12,12 +12,13 @@ import javax.inject.Inject
 
 class GetApisUseCase @Inject constructor(
     private val repository: ApiRepository,
-
 ) {
     operator fun invoke(): Flow<Resource<List<EntryDto>>> = flow {
         try {
             emit(Resource.Loading<List<EntryDto>>())
+
             val data = repository.hGetApisDataFromNetwork().entries.map { it.toEntryDto() }
+
             emit(Resource.Success<List<EntryDto>>(data))
         } catch (e: HttpException) {
             emit(Resource.Error<List<EntryDto>>(e.localizedMessage
